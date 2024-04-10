@@ -1,13 +1,17 @@
 local M = {}
 
 function M.fuse()
+	local is_in_tmux_session = os.getenv("TMUX")
+	if is_in_tmux_session == nil then
+		return nil
+	end
 	local curr_window = io.popen('tmux display-message -p "#I"'):read("*a")
 
 	local file = io.popen('tmux list-windows -F "#I"')
 	local windows_str = ""
 
 	if not file then
-		return ""
+		return nil
 	end
 
 	for window in file:read("*a"):gmatch("%S+") do
